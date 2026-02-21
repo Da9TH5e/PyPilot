@@ -54,7 +54,7 @@ Inside the CLI:
 ```
 consent <path-to-project>
 ```
-if you dont provide any path with consent then it will take the path in which file the file contains
+If no path is provided then it will take the path in which the file contains
 ```
 build_once
 ask explain the project structure
@@ -64,6 +64,7 @@ ask explain the project structure
 - The local model (Qwen2.5-Coder-0.5B-Instruct) will download on first use.
 - Internet is required only for the initial model download.
 - After that, the model runs fully offline.
+
 
 
 
