@@ -15,7 +15,7 @@ class BaseModel:
 
 
 class LocalModel(BaseModel):
-    MODEL_ID = "Qwen/Qwen2.5-Coder-0.5B-Instruct"
+    MODEL_ID = "Qwen/Qwen2.5-1.5B-Instruct"
 
     def __init__(self):
         self._tokenizer: Optional[Any] = None
