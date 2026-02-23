@@ -39,7 +39,7 @@ venv\Scripts\activate
 ```
 ### 3️⃣ Install Dependencies
 ```
-pip install -r requirements.txt
+pip install -r requirements_dev.txt
 ```
 First installation may take time because torch is large.
 
@@ -64,6 +64,7 @@ ask explain the project structure
 - The local model (Qwen2.5-Coder-0.5B-Instruct) will download on first use.
 - Internet is required only for the initial model download.
 - After that, the model runs fully offline.
+
 
 
 
