@@ -61,9 +61,10 @@ ask explain the project structure
 ```
 ## ⚠ Notes
 - This is still in early development
-- The local model (Qwen2.5-Coder-0.5B-Instruct) will download on first use.
+- The local model (Qwen2.5-Coder-1.5B-Instruct) will download on first use.
 - Internet is required only for the initial model download.
 - After that, the model runs fully offline.
+
 
 
 
