@@ -8,8 +8,9 @@ class Checker:
 	HEAVY_WORDS = {"create", "detailed", "details", "detail", "structured", "generate"}
 	LIGHT_WORDS = {"explain", "use of", "tell more", "find"}
 
-	def __init__(self, project_path: Optional[Path] = None):
+	def __init__(self, consent_given: bool, project_path: Optional[Path] = None):
 		self.project_path = project_path
+		self.consent_given = consent_given
 
 	def _internet_available(self, timeout: float = 2.0) -> bool:
 		try:

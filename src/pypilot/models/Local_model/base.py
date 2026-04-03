@@ -6,14 +6,21 @@ from pypilot.memory.chat_store import DataBaseStore
 
 
 class BaseModel:
-    def __init__(self, project_path: Optional[Path] = None):
+    def __init__(
+        self,
+        project_path: Optional[Path] = None,
+        consent_given: Optional[bool] = None,
+    ):
         self.project_id = None
         self.chat_store = None
+        self.consent_given = consent_given
 
         if project_path:
             self.chat_store = DataBaseStore(project_path)
             self.chat_store.create_db()
-            self.project_id = self.chat_store.get_or_create_project(str(project_path))
+            self.project_id = self.chat_store.get_or_create_project(
+                str(project_path)
+            )
 
     def answer(
         self,
@@ -27,8 +34,12 @@ class BaseModel:
 class LocalModel(BaseModel):
     MODEL_ID = "Qwen/Qwen2.5-1.5B-Instruct"
 
-    def __init__(self,  project_path: Optional[Path] = None):
-        super().__init__(project_path)
+    def __init__(
+        self,
+        project_path: Optional[Path] = None,
+        consent_given: Optional[bool] = None,
+    ):
+        super().__init__(project_path, consent_given)
         self._tokenizer: Optional[Any] = None
         self._model: Optional[Any] = None
         self._loaded = False

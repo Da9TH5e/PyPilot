@@ -6,15 +6,17 @@ import sqlite3
 
 
 class DataBaseStore:
-    def __init__(self, project_path: Path):
-        self.db_path = project_path / ".pypilot" / "chat.db"
+    def __init__(self):
+        self.db_path = Path.home() / ".pypilot" / "chat.db"
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.create_db()
 
     def create_db(self) -> bool:
         sql_statements = [
             """
             CREATE TABLE IF NOT EXISTS projects (
                 project_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                consent_given INTEGER NOT NULL DEFAULT 0,
                 project_path TEXT NOT NULL UNIQUE,
                 date TEXT DEFAULT CURRENT_DATE,
                 time TEXT DEFAULT CURRENT_TIME
@@ -35,19 +37,19 @@ class DataBaseStore:
         ]
 
         try:
-            with sqlite3.connect(self.db_path) as connection:
-                connection.execute("PRAGMA foreign_keys = ON;")
-                cursor = connection.cursor()
+            with sqlite3.connect(self.db_path) as connect:
+                connect.execute("PRAGMA foreign_keys = ON;")
+                cursor = connect.cursor()
                 for statement in sql_statements:
                     cursor.execute(statement)
-                connection.commit()
+                connect.commit()
             return True
 
         except sqlite3.OperationalError as e:
-            connection.close()
+            connect.close()
             print("Error:", e)
 
-        connection.close()
+        connect.close()
         return False
 
     def get_or_create_project(self, project_path: str) -> Optional[int]:
@@ -60,9 +62,9 @@ class DataBaseStore:
         """
 
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.execute("PRAGMA foreign_keys = ON;")
-                cur = conn.cursor()
+            with sqlite3.connect(self.db_path) as connect:
+                connect.execute("PRAGMA foreign_keys = ON;")
+                cur = connect.cursor()
                 cur.execute(select_sql, (project_path,))
                 row = cur.fetchone()
 
@@ -70,7 +72,7 @@ class DataBaseStore:
                     return row[0]
 
                 cur.execute(insert_sql, (project_path,))
-                conn.commit()
+                connect.commit()
                 return cur.lastrowid
 
         except sqlite3.OperationalError as e:
@@ -92,18 +94,60 @@ class DataBaseStore:
         """
 
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.execute("PRAGMA foreign_keys = ON;")
-                cur = conn.cursor()
+            with sqlite3.connect(self.db_path) as connect:
+                connect.execute("PRAGMA foreign_keys = ON;")
+                cur = connect.cursor()
                 cur.execute(sql_chat, (project_id, provider, question, answer))
-                conn.commit()
+                connect.commit()
             return True
 
         except sqlite3.OperationalError as e:
             print("Error:", e)
         
-        conn.close()
+        connect.close()
         return False
+    
+    def get_consent(self, project_id: int) -> bool:
+        sql = "SELECT consent_given FROM projects WHERE project_id = ?"
+
+        try:
+            with sqlite3.connect(self.db_path) as connect:
+                cursor = connect.cursor()
+                cursor.execute(sql, (project_id,))
+                row = cursor.fetchone()
+                if row:
+                    return bool(row[0])
+        except sqlite3.OperationalError as e:
+            print("Error :", e)
+
+        return False
+    
+    def update_consent(
+            self,
+            project_id: int,
+            consent: bool,
+        ) -> bool:
+
+        sql = """
+            UPDATE projects
+            SET consent_given = ?
+            WHERE project_id = ?
+        """
+        try:
+            with sqlite3.connect(self.db_path) as connect:
+                connect.execute("PRAGMA foreign_keys = ON;")
+                cursor = connect.cursor()
+                cursor.execute(sql, (int(consent), project_id))
+                connect.commit()
+
+                if cursor.rowcount == 0:
+                    print("Warning: No project row updated.")
+                    return False
+                return True
+
+        except sqlite3.OperationalError as e:
+            print("Error :", e)
+            return False
 
     def fetch_id(self, project_path: str) -> Optional[int]:
         fetching_id = """
@@ -146,6 +190,27 @@ class DataBaseStore:
 
             return list(reversed(convo))
         
+        except sqlite3.OperationalError as e:
+            print("Error :", e)
+
+        connect.close()
+        return None
+    
+    def fetch_last_project_path(self) -> Optional[str]:
+        sql = """
+            SELECT project_path from projects
+            ORDER BY project_id 
+            DESC LIMIT 1
+        """
+
+        try:
+            with sqlite3.connect(self.db_path) as connect:
+                cursor = connect.cursor()
+                cursor.execute(sql)
+                row = cursor.fetchone()
+
+                return row[0] if row else None
+            
         except sqlite3.OperationalError as e:
             print("Error :", e)
 
