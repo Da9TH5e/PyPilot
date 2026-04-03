@@ -1,22 +1,34 @@
+<<<<<<< HEAD
 #pypilot/memorry/chat_store.py
 
+=======
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 from pathlib import Path
 from typing import Optional
 import sqlite3
 
 
 class DataBaseStore:
+<<<<<<< HEAD
     def __init__(self):
         self.db_path = Path.home() / ".pypilot" / "chat.db"
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.create_db()
+=======
+    def __init__(self, project_path: Path):
+        self.db_path = project_path / ".pypilot" / "chat.db"
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 
     def create_db(self) -> bool:
         sql_statements = [
             """
             CREATE TABLE IF NOT EXISTS projects (
                 project_id INTEGER PRIMARY KEY AUTOINCREMENT,
+<<<<<<< HEAD
                 consent_given INTEGER NOT NULL DEFAULT 0,
+=======
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
                 project_path TEXT NOT NULL UNIQUE,
                 date TEXT DEFAULT CURRENT_DATE,
                 time TEXT DEFAULT CURRENT_TIME
@@ -37,6 +49,7 @@ class DataBaseStore:
         ]
 
         try:
+<<<<<<< HEAD
             with sqlite3.connect(self.db_path) as connect:
                 connect.execute("PRAGMA foreign_keys = ON;")
                 cursor = connect.cursor()
@@ -73,12 +86,42 @@ class DataBaseStore:
 
                 cur.execute(insert_sql, (project_path,))
                 connect.commit()
+=======
+            with sqlite3.connect(self.db_path) as connection:
+                connection.execute("PRAGMA foreign_keys = ON;")
+                cursor = connection.cursor()
+                for statement in sql_statements:
+                    cursor.execute(statement)
+                connection.commit()
+            return True
+
+        except sqlite3.OperationalError as e:
+            print("Error:", e)
+            return False
+
+    def insert_project(self, proj_path: str) -> Optional[int]:
+        sql_project = """
+            INSERT INTO projects(project_path)
+            VALUES(?)
+        """
+
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                conn.execute("PRAGMA foreign_keys = ON;")
+                cur = conn.cursor()
+                cur.execute(sql_project, (proj_path,))
+                conn.commit()
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
                 return cur.lastrowid
 
         except sqlite3.OperationalError as e:
             print("Error:", e)
+<<<<<<< HEAD
 
         return None
+=======
+            return None
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 
     def insert_convo(
         self,
@@ -94,15 +137,24 @@ class DataBaseStore:
         """
 
         try:
+<<<<<<< HEAD
             with sqlite3.connect(self.db_path) as connect:
                 connect.execute("PRAGMA foreign_keys = ON;")
                 cur = connect.cursor()
                 cur.execute(sql_chat, (project_id, provider, question, answer))
                 connect.commit()
+=======
+            with sqlite3.connect(self.db_path) as conn:
+                conn.execute("PRAGMA foreign_keys = ON;")
+                cur = conn.cursor()
+                cur.execute(sql_chat, (project_id, provider, question, answer))
+                conn.commit()
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
             return True
 
         except sqlite3.OperationalError as e:
             print("Error:", e)
+<<<<<<< HEAD
         
         connect.close()
         return False
@@ -216,3 +268,6 @@ class DataBaseStore:
 
         connect.close()
         return None
+=======
+            return False
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4

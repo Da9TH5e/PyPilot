@@ -1,17 +1,24 @@
 # models/process.py
+<<<<<<< HEAD
 from pathlib import Path
 import socket
 from typing import Optional
+=======
+import socket
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 from pypilot.models.Local_model.base import LocalModel
 
 class Checker:
 	HEAVY_WORDS = {"create", "detailed", "details", "detail", "structured", "generate"}
 	LIGHT_WORDS = {"explain", "use of", "tell more", "find"}
 
+<<<<<<< HEAD
 	def __init__(self, consent_given: bool, project_path: Optional[Path] = None):
 		self.project_path = project_path
 		self.consent_given = consent_given
 
+=======
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 	def _internet_available(self, timeout: float = 2.0) -> bool:
 		try:
 			socket.create_connection(("8.8.8.8", 53), timeout=timeout)
@@ -45,7 +52,11 @@ class Checker:
 		# 		"Heavy tasks are not recommended in offline mode."
 		# 	)
 
+<<<<<<< HEAD
 		local_model = LocalModel(project_path=self.project_path)
+=======
+		local_model = LocalModel()
+>>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 		return local_model.answer(
 			question,
 			context = context,
