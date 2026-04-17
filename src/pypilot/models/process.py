@@ -1,24 +1,17 @@
 # models/process.py
-<<<<<<< HEAD
 from pathlib import Path
 import socket
 from typing import Optional
-=======
-import socket
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
-from pypilot.models.Local_model.base import LocalModel
+from pypilot.models.Local_model.base import VPSModel
 
 class Checker:
 	HEAVY_WORDS = {"create", "detailed", "details", "detail", "structured", "generate"}
 	LIGHT_WORDS = {"explain", "use of", "tell more", "find"}
 
-<<<<<<< HEAD
 	def __init__(self, consent_given: bool, project_path: Optional[Path] = None):
 		self.project_path = project_path
 		self.consent_given = consent_given
 
-=======
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 	def _internet_available(self, timeout: float = 2.0) -> bool:
 		try:
 			socket.create_connection(("8.8.8.8", 53), timeout=timeout)
@@ -36,29 +29,19 @@ class Checker:
 		is_light = self._contains_keywords(question, self.LIGHT_WORDS)
 		is_heavy = self._contains_keywords(question, self.HEAVY_WORDS)
 
-		# if self._internet_available():
-		# 	if is_heavy:
-		# 		return "[VPS + Claude] -> Heavy task queued to claude"
+		local_model = VPSModel(project_path=self.project_path)
 
-		# 	if is_light:
-		# 		return "[VPS + Groq] -> Light task queued to Groq"
-
-		# 	return "[VPS] -> Default online handling....."
-
-
-		# if is_heavy and not self._internet_available():
-		# 	return (
-		# 		"[OFFLINE MODE]\n"
-		# 		"Heavy tasks are not recommended in offline mode."
-		# 	)
-
-<<<<<<< HEAD
-		local_model = LocalModel(project_path=self.project_path)
-=======
-		local_model = LocalModel()
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
+		if is_light:
+			return local_model.answer(
+				question,
+				provider = "groq",
+				context = context,
+				metadata = {"reasoning": "light"},
+			)
+   
 		return local_model.answer(
 			question,
+			provider = "claude",
 			context = context,
-			metadata = {"reason": "offline", "heavy": heavy},
+			metadata = {"reasoning": "heavy"},
 		)

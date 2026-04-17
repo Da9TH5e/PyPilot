@@ -1,15 +1,9 @@
-<<<<<<< HEAD
-#pypilot/cli.py
+# pypilot/cli.py
 
 import cmd
 from pathlib import Path
 import os
 from pypilot.memory.chat_store import DataBaseStore
-=======
-import cmd
-from pathlib import Path
-import os
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 from pypilot.models.process import Checker
 from pypilot.context_builder import ContextBuilder
 from pypilot.context_store import ContextStore
@@ -23,16 +17,12 @@ class PypilotCLI(cmd.Cmd):
     def __init__(self):
         super().__init__()
         self.consent_given = False
-        self.task_consent = False
         self.project_root = None
         self.builder = None
-        self.memory = None
         self.store = None
 
     def do_consent(self, arg):
         """Give consent and set project path"""
-<<<<<<< HEAD
-
         path_input = arg.strip() if arg.strip() else os.getcwd()
         project_path = Path(path_input).expanduser().resolve()
 
@@ -41,7 +31,6 @@ class PypilotCLI(cmd.Cmd):
             return
 
         db = DataBaseStore()
-        db.create_db()
         project_id = db.get_or_create_project(str(project_path))
 
         if project_id and db.get_consent(project_id):
@@ -50,32 +39,19 @@ class PypilotCLI(cmd.Cmd):
             self.builder = ContextBuilder(project_path)
             self.store = ContextStore(project_path)
             print(f"Consent already recorded. Project locked to: {project_path}")
-=======
-        if self.consent_given:
-            print(f"Consent already given. Project locked to: {self.project_root}")
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
             return
 
-        decision = input("Do you agree to the terms? (y/n): ").strip().lower()
+        decision = input("Do you agree to share your project structure with the AI? (y/n): ").strip().lower()
         if decision not in ("y", "yes"):
             print("Consent not given.")
             return
 
-<<<<<<< HEAD
         if project_id is None:
             print("Failed to initialize project in database.")
             return
 
         db.update_consent(project_id, True)
 
-=======
-        path_input = arg.strip() if arg.strip() else os.getcwd()
-        project_path = Path(path_input).expanduser().resolve()
-
-        if not project_path.exists() or not project_path.is_dir():
-            print("Invalid project path.")
-            return
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
         self.consent_given = True
         self.project_root = project_path
         self.builder = ContextBuilder(project_path)
@@ -92,7 +68,6 @@ class PypilotCLI(cmd.Cmd):
             if self.store.exists():
                 print("Context already exists. Use 'refresh' to rebuild.")
                 return
-
             try:
                 context = self.builder.build()
                 self.store.save(context)
@@ -102,7 +77,10 @@ class PypilotCLI(cmd.Cmd):
 
     def do_refresh(self, arg):
         """Rebuild context ignoring existing one"""
-        if self.store and self.builder:    
+        if not self._ready():
+            return
+
+        if self.store and self.builder:
             try:
                 context = self.builder.build()
                 self.store.save(context)
@@ -110,15 +88,6 @@ class PypilotCLI(cmd.Cmd):
             except Exception as e:
                 print(f"Failed to refresh context: {e}")
 
-<<<<<<< HEAD
-=======
-    def heavy_mode_enabled(self) -> bool:
-        user_decision = input("Your prompt includes heavy tasks which might impact the performance it is suggested to connect to internet and then try again.\n If you wish to proceed then Enter(y/n) :")
-        if user_decision not in ("yes", "y"):
-            return False
-        return True
-
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
     def do_inspect(self, arg):
         """Inspect the project structure"""
         if not self._ready():
@@ -130,12 +99,11 @@ class PypilotCLI(cmd.Cmd):
 
         if self.store:
             print_tree(self.store.load())
-    # Backward-compatible alias
+
     do_display = do_inspect
 
     def do_ask(self, arg: str) -> None:
         """Ask Pypilot a question about the project."""
-
         if not self._ready():
             return
 
@@ -150,27 +118,16 @@ class PypilotCLI(cmd.Cmd):
 
         print("Generating response...\n")
         context = self.store.load()
-<<<<<<< HEAD
         checker = Checker(project_path=self.project_root, consent_given=self.consent_given)
-=======
-        checker = Checker()
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
 
         try:
-            result = checker.decide(
-                question=question,
-                context=context,
-                heavy=False,
-            )
-
+            result = checker.decide(question=question, context=context)
             print(result)
-
         except Exception as e:
             print("\n[ERROR] Failed to process request.\n")
             print(e)
 
     def _ready(self) -> bool:
-<<<<<<< HEAD
         db = DataBaseStore()
 
         if not self.project_root:
@@ -189,9 +146,6 @@ class PypilotCLI(cmd.Cmd):
 
         self.consent_given = db.get_consent(project_id)
         if not self.consent_given:
-=======
-        if not self.consent_given or not self.builder or not self.store:
->>>>>>> 415efd0dba29b694494a84f60f1afd4662135ff4
             print("Consent required. Run: consent")
             return False
 
@@ -201,7 +155,7 @@ class PypilotCLI(cmd.Cmd):
         """Exit Pypilot"""
         print("Goodbye.")
         return True
-        
+
     do_quit = do_exit
 
     def emptyline(self):
