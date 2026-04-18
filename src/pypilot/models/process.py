@@ -23,11 +23,10 @@ class Checker:
 		q = question.lower()
 		return any(word in q for word in keywords)
 
-	def decide(self, question: str, context: dict | None = None, heavy: bool = False) -> str:
+	def decide(self, question: str, context: dict | None = None) -> str:
 		context = context or {}
 
 		is_light = self._contains_keywords(question, self.LIGHT_WORDS)
-		is_heavy = self._contains_keywords(question, self.HEAVY_WORDS)
 
 		local_model = VPSModel(project_path=self.project_path)
 
