@@ -34,9 +34,6 @@ class VPSModel(BaseModel):
         consent_given: Optional[bool] = None,
     ):
         super().__init__(project_path, consent_given)
-        self._tokenizer: Optional[Any] = None
-        self._model: Optional[Any] = None
-        self._loaded = False
 
 
     def answer(
@@ -85,7 +82,7 @@ class VPSModel(BaseModel):
                 "context": context,
                 "metadata": metadata,
                 "prompt": prompt,
-                "provider": "claude"
+                "provider": provider
             })
             res.raise_for_status()
         except Exception as e:
