@@ -6,8 +6,6 @@ Pypilot is designed to keep the client small and controlled, while delegating he
 - Modular model abstraction layer
 - Context builder + routing system
 - CLI-based interaction
-- Optional local model support (manual, limited)
-- Offline non-ML fallback mode
 
 ## 🔜 Coming Next
 - VPS-based reasoning support
@@ -17,7 +15,6 @@ Pypilot is designed to keep the client small and controlled, while delegating he
 - Routing optimizations
 - Performance improvements
 - Multi-agent experimentation
-- Smarter task delegation
 
 ## 💻 Running Locally
 ### 1️⃣ Clone the Repository
