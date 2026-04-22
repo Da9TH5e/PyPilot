@@ -4,7 +4,7 @@ import cmd
 from pathlib import Path
 import os
 from pypilot.memory.chat_store import DataBaseStore
-from pypilot.models.process import Checker
+from pypilot.Model_Decider.process import Checker
 from pypilot.context_builder import ContextBuilder
 from pypilot.context_store import ContextStore
 from pypilot.presentation.tree_printer import print_tree

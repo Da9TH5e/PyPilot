@@ -2,7 +2,7 @@
 from pathlib import Path
 import socket
 from typing import Optional
-from pypilot.models.Local_model.base import VPSModel
+from pypilot.Model_Decider.Server_models.base import VPSModel
 
 class Checker:
 	HEAVY_WORDS = {"create", "detailed", "details", "detail", "structured", "generate"}
