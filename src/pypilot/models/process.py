@@ -33,14 +33,14 @@ class Checker:
 		if is_light:
 			return local_model.answer(
 				question,
-				provider = "groq",
+				provider = "light",
 				context = context,
 				metadata = {"reasoning": "light"},
 			)
    
 		return local_model.answer(
 			question,
-			provider = "claude",
+			provider = "heavy",
 			context = context,
 			metadata = {"reasoning": "heavy"},
 		)
