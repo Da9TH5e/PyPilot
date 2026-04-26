@@ -24,7 +24,7 @@ class BaseModel:
 
     def answer(
         self,
-    ) -> str:
+    ) -> Optional[str]:
         raise NotImplementedError
 
 class VPSModel(BaseModel):
@@ -43,13 +43,12 @@ class VPSModel(BaseModel):
         provider: Optional[str] = None,
         context: Dict[str, Any],
         metadata: Optional[Dict[str, Any]],
-    ) -> str:
-    
+    ) -> Optional[str]:
+
         memory_block = ""
 
         if self.chat_store and self.project_id:
             previous = self.chat_store.fetch_convo(self.project_id, limit=5)
-
             if previous:
                 memory_block = "Previous conversation history:\n\n"
                 for i, (q, a) in enumerate(previous, 1):
@@ -57,28 +56,27 @@ class VPSModel(BaseModel):
                     memory_block += f"User: {q}\n"
                     memory_block += f"Assistant: {a}\n\n"
 
-        prompt = "You are an ssistant helping with a project.\n\n"
+        prompt = ""
 
         if memory_block:
             prompt += (
-                "PREVIOUS CONVERSATIONS: \n"
-                "-------------------------\n"
+                "PREVIOUS CONVERSATIONS:\n"
+                "-----------------------\n"
                 f"{memory_block}\n"
             )
         else:
-            prompt += "There is no previous converstion. \n\n"
+            prompt += "There is no previous conversation.\n\n"
 
         prompt += (
-            "CURRENT QUESTION: \n"
-            "------------------\n"
+            "CURRENT QUESTION:\n"
+            "-----------------\n"
             f"{question}\n\n"
-
             "Answer the current question clearly. "
             "If it refers to previous conversation, use the information above."
         )
-        
+
         try:
-            res = requests.post("http://<vps-ip>/api/ask/", json={
+            res = requests.post("http://72.61.173.75:8002/api/ask", json={
                 "context": context,
                 "metadata": metadata,
                 "prompt": prompt,
@@ -87,14 +85,17 @@ class VPSModel(BaseModel):
             res.raise_for_status()
         except Exception as e:
             return f"[VPS ERROR] Failed to connect to the network service: {e}"
-        
-        raw_answer = res.json()
 
-        if "content" in raw_answer:
-            answer = raw_answer["content"][0]["text"]
-        elif "choices" in raw_answer:
-            answer = raw_answer["choices"][0]["message"]["content"]
-        else:
-            answer = str(raw_answer)
+        raw_answer = res.json()
+        answer = raw_answer["answer"]
+
+        # ← Save to SQLite so next question has history
+        if self.chat_store and self.project_id:
+            self.chat_store.insert_convo(
+                project_id=self.project_id,
+                provider=provider or "unknown",
+                question=question,
+                answer=answer,
+            )
 
         return answer
