@@ -6,15 +6,15 @@ Pypilot is designed to keep the client small and controlled, while delegating he
 - Modular model abstraction layer
 - Context builder + routing system
 - CLI-based interaction
-
-## 🔜 Coming Next
 - VPS-based reasoning support
 - Fast online reasoning integration
+- Routing optimizations
+- Multi-agent experimentation
+
+## 🔜 Coming Next
 - Deep reasoning / code generation via backend
 - Structured logging system
-- Routing optimizations
 - Performance improvements
-- Multi-agent experimentation
 
 ## 💻 Running Locally
 ### 1️⃣ Clone the Repository
@@ -25,10 +25,10 @@ cd pypilot
 ### 2️⃣ Create a Virtual Environment (Recommended)
 
 macOS / Linux
-
+```
 python3 -m venv venv
 source venv/bin/activate
-
+```
 Windows
 ```
 python -m venv venv
