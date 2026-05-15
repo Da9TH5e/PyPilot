@@ -25,10 +25,10 @@ cd pypilot
 ### 2️⃣ Create a Virtual Environment (Recommended)
 
 macOS / Linux
-
+```
 python3 -m venv venv
 source venv/bin/activate
-
+```
 Windows
 ```
 python -m venv venv
