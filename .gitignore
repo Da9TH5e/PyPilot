@@ -1,3 +1,8 @@
 __pycache__
 .pypilot
 .pyc
+src/__pycache__
+src/pypilot/../__pycache__
+.env
+.env.*
+!.env.example

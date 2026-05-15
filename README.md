@@ -40,7 +40,22 @@ pip install -r requirements_dev.txt
 ```
 First installation may take time because torch is large.
 
-### 4️⃣ Run the CLI
+### 4️⃣ Configure the VPS API
+Create a private `.env` file from the example file:
+```
+copy .env.example .env
+```
+
+Set these values in `.env`:
+```
+PYSITANT_VPS_API_URL=https://your-domain.com/api/ask
+PYSITANT_VPS_SESSION_URL=https://your-domain.com/api/session
+PYSITANT_API_KEY=your-private-api-key
+```
+
+The API key is used only to create a short-lived server session token. Do not publish a real API key inside this package.
+
+### 5️⃣ Run the CLI
 ```
 cd src
 python -m pypilot.cli

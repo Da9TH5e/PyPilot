@@ -4,7 +4,7 @@ import cmd
 from pathlib import Path
 import os
 from pypilot.memory.chat_store import DataBaseStore
-from pypilot.models.process import Checker
+from pypilot.Model_Decider.process import Checker
 from pypilot.context_builder import ContextBuilder
 from pypilot.context_store import ContextStore
 from pypilot.presentation.tree_printer import print_tree
@@ -118,7 +118,7 @@ class PypilotCLI(cmd.Cmd):
 
         print("Generating response...\n")
         context = self.store.load()
-        checker = Checker(project_path=self.project_root, consent_given=self.consent_given)
+        checker = Checker(project_path=self.project_root)
 
         try:
             result = checker.decide(question=question, context=context)
@@ -150,6 +150,11 @@ class PypilotCLI(cmd.Cmd):
             return False
 
         return True
+    
+    def do_EOF(self, arg):
+        """Handle end-of-input (e.g. non-interactive stdin) and exit cleanly."""
+        print()
+        return self.do_exit(arg)
 
     def do_exit(self, arg):
         """Exit Pypilot"""
