@@ -12,9 +12,11 @@ Pypilot is designed to keep the client small and controlled, while delegating he
 - Multi-agent experimentation
 
 ## 🔜 Coming Next
-- Deep reasoning / code generation via backend
-- Structured logging system
+- Add instructions to make easier for the user
 - Performance improvements
+
+## 🔮 Future Ideas
+- Add functionality to make changes to the code directly
 
 ## 💻 Running Locally
 ### 1️⃣ Clone the Repository
@@ -23,7 +25,6 @@ git clone https://github.com/your-username/pypilot.git
 cd pypilot
 ```
 ### 2️⃣ Create a Virtual Environment (Recommended)
-
 macOS / Linux
 ```
 python3 -m venv venv
@@ -76,9 +77,3 @@ ask explain the project structure
 - The local model (Qwen2.5-Coder-1.5B-Instruct) will download on first use.
 - Internet is required only for the initial model download.
 - After that, the model runs fully offline.
-
-
-
-
-
-
