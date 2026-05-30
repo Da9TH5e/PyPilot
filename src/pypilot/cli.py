@@ -1,5 +1,6 @@
 # pypilot/cli.py
-
+from rich_pyfiglet import RichFiglet
+from rich.console import Console
 import cmd
 from pathlib import Path
 import os
@@ -9,8 +10,22 @@ from pypilot.context_builder import ContextBuilder
 from pypilot.context_store import ContextStore
 from pypilot.presentation.tree_printer import print_tree
 
+console = Console()
+
 
 class PypilotCLI(cmd.Cmd):
+    print("\n")
+    fig = RichFiglet(
+        "Pysitant", 
+        font="banner3-D",
+        colors=["#02701e", "#3d7002", "#ffffff"],
+        border_padding=(3, 5),
+    )
+    
+    console.print(fig)
+    
+    print("\n")
+    
     intro = "Welcome to Pypilot. Type 'help' to list commands."
     prompt = "Pypilot> "
 
