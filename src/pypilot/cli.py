@@ -14,9 +14,8 @@ console = Console()
 
 
 class PypilotCLI(cmd.Cmd):
-    print("\n")
     fig = RichFiglet(
-        "Pysitant", 
+        " Pysitant", 
         font="banner3-D",
         colors=["#02701e", "#3d7002", "#ffffff"],
         border_padding=(3, 5),
@@ -26,8 +25,11 @@ class PypilotCLI(cmd.Cmd):
     
     print("\n")
     
-    intro = "Welcome to Pypilot. Type 'help' to list commands."
-    prompt = "Pypilot> "
+    intro = console.print(" 🤖 Welcome to Pysitant, your personal AI assistant that lives inside your project in the form of a python package.")
+    sub_intro = console.print(" List of commands of necessary commands needed to get started :\n [#fcafa9] - consent [/#fcafa9]---> for giving consent \n [#a9edfc] - build_once [/#a9edfc]---> for building the context \n [#b1fca9] - refresh [/#b1fca9]---> for refreshing the context \n [#fafca9] - inspect [/#fafca9]---> for inspecting the project structure \n [#cfa9fc] - ask [/#cfa9fc]---> for asking questions \n  - exit ---> for exit \n")
+    
+    help_intro = console.print(" Type \"help\"  for more details on how to use this")
+    prompt = f"Pysitant({os.getcwd()})> "
 
     def __init__(self):
         super().__init__()
@@ -180,6 +182,15 @@ class PypilotCLI(cmd.Cmd):
 
     def emptyline(self):
         pass
+    
+    def do_help(self, arg):
+        console.print("Step 1: Run 'consent' to give permission and set your project path (defaults to current directory), if nothing passed.\n"
+                      "Step 2: Run 'build_once' to build the context for the first time. This will analyze your project and create a context file a structure basically.\n"
+                      "Step 3: Run 'inspect' to see the project structure in a tree format. This helps you understand how Pysitant has interpreted your project.\n"
+                      "Step 4: Run 'ask <your question>' to ask Pysitant any question regarding your project, or how to perform certain tasks within your project.\n"
+                      
+                      "For more details check the repository README at :[cyan][link=https://github.com/Da9TH5e/Pysistant]https://github.com/Da9TH5e/Pysistant[/link][/cyan]"
+                      )
 
 if __name__ == "__main__":
     PypilotCLI().cmdloop()
