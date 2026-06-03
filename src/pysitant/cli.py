@@ -4,16 +4,15 @@ from rich.console import Console
 import cmd
 from pathlib import Path
 import os
-from pypilot.memory.chat_store import DataBaseStore
-from pypilot.Model_Decider.process import Checker
-from pypilot.context_builder import ContextBuilder
-from pypilot.context_store import ContextStore
-from pypilot.presentation.tree_printer import print_tree
+from pysitant.memory.chat_store import DataBaseStore
+from pysitant.Model_Decider.process import Checker
+from pysitant.context_builder import ContextBuilder
+from pysitant.context_store import ContextStore
+from pysitant.presentation.tree_printer import print_tree
 
 console = Console()
 
-
-class PypilotCLI(cmd.Cmd):
+class Pysitant(cmd.Cmd):
     fig = RichFiglet(
         " Pysitant", 
         font="banner3-D",
@@ -193,4 +192,4 @@ class PypilotCLI(cmd.Cmd):
                       )
 
 if __name__ == "__main__":
-    PypilotCLI().cmdloop()
+    Pysitant().cmdloop()

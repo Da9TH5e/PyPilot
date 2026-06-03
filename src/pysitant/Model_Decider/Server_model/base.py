@@ -7,7 +7,7 @@ from urllib.parse import urlparse, urlunparse
 import requests
 from dotenv import load_dotenv
 
-from pypilot.memory.chat_store import DataBaseStore
+from pysitant.memory.chat_store import DataBaseStore
 
 
 load_dotenv()
