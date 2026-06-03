@@ -1,4 +1,6 @@
 # pypilot/cli.py
+import time
+
 from rich_pyfiglet import RichFiglet
 from rich.console import Console
 import cmd
@@ -132,16 +134,17 @@ class Pysitant(cmd.Cmd):
             print("No context found. Run 'build_once' first.")
             return
 
-        print("Generating response...\n")
-        context = self.store.load()
-        checker = Checker(project_path=self.project_root)
+        with console.status("[#fce090]Generating [/#fce090]", spinner="simpleDotsScrolling", spinner_style="#fce090"):
+            context = self.store.load()
+            checker = Checker(project_path=self.project_root)
 
-        try:
-            result = checker.decide(question=question, context=context)
-            print(result)
-        except Exception as e:
-            print("\n[ERROR] Failed to process request.\n")
-            print(e)
+            try:
+                result = checker.decide(question=question, context=context)
+                time.sleep(2.9)
+                print(result)
+            except Exception as e:
+                print("\n[ERROR] Failed to process request.\n")
+                print(e)
 
     def _ready(self) -> bool:
         db = DataBaseStore()
