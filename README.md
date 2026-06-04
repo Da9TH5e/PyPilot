@@ -10,9 +10,9 @@ Pypilot is designed to keep the client small and controlled, while delegating he
 - Fast online reasoning integration
 - Routing optimizations
 - Multi-agent experimentation
+- Add instructions to make easier for the user
 
 ## 🔜 Coming Next
-- Add instructions to make easier for the user
 - Performance improvements
 
 ## 🔮 Future Ideas
