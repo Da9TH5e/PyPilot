@@ -1,11 +1,14 @@
 # pypilot/cli.py
 import time
 
+from rich.markdown import Markdown
+from rich.panel import Panel
 from rich_pyfiglet import RichFiglet
 from rich.console import Console
 import cmd
 from pathlib import Path
 import os
+
 from pysitant.memory.chat_store import DataBaseStore
 from pysitant.Model_Decider.process import Checker
 from pysitant.context_builder import ContextBuilder
@@ -45,7 +48,7 @@ class Pysitant(cmd.Cmd):
         project_path = Path(path_input).expanduser().resolve()
 
         if not project_path.exists() or not project_path.is_dir():
-            print("Invalid project path.")
+            console.print("([red][ERROR] Invalid project path.[/red]) Please provide a valid directory path.")
             return
 
         db = DataBaseStore()
@@ -56,16 +59,16 @@ class Pysitant(cmd.Cmd):
             self.project_root = project_path
             self.builder = ContextBuilder(project_path)
             self.store = ContextStore(project_path)
-            print(f"Consent already recorded. Project locked to: {project_path}")
+            console.print(f"([green]Consent already recorded[/green]) Project locked to: {project_path}")
             return
 
         decision = input("Do you agree to share your project structure with the AI? (y/n): ").strip().lower()
         if decision not in ("y", "yes"):
-            print("Consent not given.")
+            console.print("([red][ERROR] Consent not given. [/red]) Pysitant cannot function without consent to access the project structure.")
             return
 
         if project_id is None:
-            print("Failed to initialize project in database.")
+            console.print("[red][ERROR] Failed to initialize project in database.[/red]")
             return
 
         db.update_consent(project_id, True)
@@ -75,26 +78,32 @@ class Pysitant(cmd.Cmd):
         self.builder = ContextBuilder(project_path)
         self.store = ContextStore(project_path)
 
-        print(f"Consent recorded. Project set to: {project_path}")
+        console.print(f"Consent recorded. Project set to: \"{project_path}\"\n")
 
     def do_build_once(self, arg):
         """Build context only if it does not already exist"""
+        if arg.strip():
+            console.print("[yellow][WARNING] This command takes no arguments.[/yellow] \n")
+        
         if not self._ready():
             return
 
         if self.store and self.builder:
             if self.store.exists():
-                print("Context already exists. Use 'refresh' to rebuild.")
+                console.print("([yellow][WARNING] Context already exists.[/yellow]) Use 'refresh' to rebuild the context.")
                 return
             try:
                 context = self.builder.build()
                 self.store.save(context)
-                print("Context built successfully.")
+                console.print("[green]Context built successfully.[/green]")
             except Exception as e:
-                print(f"Failed to build context: {e}")
+                console.print(f"[red][ERROR] Failed to build context[/red]: {e}")
 
     def do_refresh(self, arg):
         """Rebuild context ignoring existing one"""
+        if arg.strip():
+            console.print("[yellow][WARNING] This command takes no arguments.[/yellow] \n")
+        
         if not self._ready():
             return
 
@@ -102,17 +111,20 @@ class Pysitant(cmd.Cmd):
             try:
                 context = self.builder.build()
                 self.store.save(context)
-                print("Context refreshed successfully.")
+                console.print("[green]Context refreshed successfully.[/green]")
             except Exception as e:
-                print(f"Failed to refresh context: {e}")
+                console.print(f"[red][ERROR] Failed to refresh context[/red]: {e}")
 
     def do_inspect(self, arg):
         """Inspect the project structure"""
+        if arg.strip():
+            console.print("[yellow][WARNING] This command takes no arguments.[/yellow] \n")
+        
         if not self._ready():
             return
 
         if self.store and not self.store.exists():
-            print("Nothing to inspect. Run 'build_once' first.")
+            console.print("([red][ERROR] Nothing to inspect.[/red]) Run 'build_once' first to build the context.")
             return
 
         if self.store:
@@ -127,11 +139,11 @@ class Pysitant(cmd.Cmd):
 
         question = arg.strip()
         if not question:
-            print("Please provide a question.")
+            console.print("([red][ERROR] Please provide a question.[/red])")
             return
 
         if not self.store or not self.store.exists():
-            print("No context found. Run 'build_once' first.")
+            console.print("([red][ERROR] No context found.[/red]) Run 'build_once' first to build the context.")
             return
 
         with console.status("[#fce090]Generating [/#fce090]", spinner="simpleDotsScrolling", spinner_style="#fce090"):
@@ -141,10 +153,17 @@ class Pysitant(cmd.Cmd):
             try:
                 result = checker.decide(question=question, context=context)
                 time.sleep(2.9)
-                print(result)
+                console.print(
+                    Panel(
+                        Markdown(result),
+                        title="[dark_orange]Pysitant[/dark_orange]",
+                        border_style="dark_orange",
+                        padding=(1, 2),
+                    )
+                )
             except Exception as e:
-                print("\n[ERROR] Failed to process request.\n")
-                print(e)
+                console.print("\n[red][ERROR] Failed to process request. Try after some time.[/red]\n")
+                console.print(e)
 
     def _ready(self) -> bool:
         db = DataBaseStore()
@@ -152,7 +171,7 @@ class Pysitant(cmd.Cmd):
         if not self.project_root:
             project_path = db.fetch_last_project_path()
             if not project_path:
-                print("No project selected. Run: consent")
+                console.print("([red][ERROR] No project selected.[/red]) Type 'consent' and press enter to give consent first.")
                 return False
             self.project_root = Path(project_path)
             self.builder = ContextBuilder(self.project_root)
@@ -160,12 +179,12 @@ class Pysitant(cmd.Cmd):
 
         project_id = db.fetch_id(str(self.project_root))
         if project_id is None:
-            print("Project not initialized. Run: consent")
+            console.print("([red][ERROR] No project found in database.[/red]) Type 'consent' and press enter to give consent first.")
             return False
 
         self.consent_given = db.get_consent(project_id)
         if not self.consent_given:
-            print("Consent required. Run: consent")
+            console.print("([red][ERROR] Consent is required.[/red]) Type 'consent' and press enter to give consent first.")
             return False
 
         return True
@@ -177,7 +196,7 @@ class Pysitant(cmd.Cmd):
 
     def do_exit(self, arg):
         """Exit Pypilot"""
-        print("Goodbye.")
+        console.print("Goodbye 👋")
         return True
 
     do_quit = do_exit
