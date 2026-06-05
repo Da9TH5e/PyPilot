@@ -1,6 +1,6 @@
-# 🚀 Pypilot
+# 🚀 Pysistant
 Lightweight AI orchestration system with strict client–server separation.
-Pypilot is designed to keep the client small and controlled, while delegating heavy reasoning and code generation to a VPS backend.
+Pysitant is designed to keep the client small and controlled, while delegating heavy reasoning and code generation to a VPS backend.
 
 ## ✅ Built So Far
 - Modular model abstraction layer
@@ -21,9 +21,10 @@ Pypilot is designed to keep the client small and controlled, while delegating he
 ## 💻 Running Locally
 ### 1️⃣ Clone the Repository
 ```
-git clone https://github.com/your-username/pypilot.git
-cd pypilot
+git clone https://github.com/your-username/Pysitant.git
+cd Pysitant
 ```
+and the server side code is in: https://github.com/Da9TH5e/Server_Pypilot
 ### 2️⃣ Create a Virtual Environment (Recommended)
 macOS / Linux
 ```
@@ -39,7 +40,6 @@ venv\Scripts\activate
 ```
 pip install -r requirements_dev.txt
 ```
-First installation may take time because torch is large.
 
 ### 4️⃣ Configure the VPS API
 Create a private `.env` file from the example file:
@@ -59,7 +59,7 @@ The API key is used only to create a short-lived server session token. Do not pu
 ### 5️⃣ Run the CLI
 ```
 cd src
-python -m pypilot.cli
+python -m pysitant.cli
 ```
 ## 🧠 First Usage
 
@@ -74,6 +74,3 @@ ask explain the project structure
 ```
 ## ⚠ Notes
 - This is still in early development
-- The local model (Qwen2.5-Coder-1.5B-Instruct) will download on first use.
-- Internet is required only for the initial model download.
-- After that, the model runs fully offline.
